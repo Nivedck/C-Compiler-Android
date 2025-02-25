@@ -1,4 +1,4 @@
-package com.example.myccompilerapp
+package com.nived.ccompiler
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,11 +9,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.myccompilerapp.compiler.CompilerManager
-import com.example.myccompilerapp.compiler.ExecutionManager
-import com.example.myccompilerapp.ui.EditorScreen
-import com.example.myccompilerapp.ui.OutputScreen
-import com.example.myccompilerapp.utils.LLVMExtractor
+import com.nived.ccompiler.compiler.CompilerManager
+import com.nived.ccompiler.compiler.ExecutionManager
+import com.nived.ccompiler.ui.EditorScreen
+import com.nived.ccompiler.ui.OutputScreen
+import com.nived.ccompiler.utils.LLVMExtractor
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {

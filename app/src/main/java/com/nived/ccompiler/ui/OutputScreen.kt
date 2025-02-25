@@ -1,4 +1,4 @@
-package com.example.myccompilerapp.ui
+package com.nived.ccompiler.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
