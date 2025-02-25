@@ -17,7 +17,7 @@
         android:id="@+id/compileButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Compile & Run" />
+        android:text="Compile &amp; Run" />
 
     <TextView
         android:id="@+id/outputView"
