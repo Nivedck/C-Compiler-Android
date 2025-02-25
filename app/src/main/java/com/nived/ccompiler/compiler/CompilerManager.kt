@@ -1,21 +1,23 @@
 package com.nived.ccompiler.compiler
 
 import android.content.Context
-import com.nived.ccompiler.utils.TCCExtractor
 import java.io.File
 
-object CompilerManager {
-    fun saveCodeToFile(context: Context, code: String): String {
-        val file = File(context.filesDir, "temp.c")
-        file.writeText(code)
-        return file.absolutePath
-    }
+class CompilerManager(private val context: Context) {
 
-    fun compileCode(context: Context, sourcePath: String): String {
-        val tccPath = "${TCCExtractor.getTCCPath(context)}/tcc"
-        val outputBinary = File(context.filesDir, "a.out").absolutePath
-        val process = Runtime.getRuntime().exec("$tccPath $sourcePath -o $outputBinary")
+    fun compileCCode(sourceCode: String): String {
+        val tccPath = com.nived.ccompiler.utils.TCCExtractor.extractTCC(context)
+        val sourceFile = File(context.filesDir, "temp.c")
+        val outputFile = File(context.filesDir, "output")
+
+        sourceFile.writeText(sourceCode)
+
+        val process = ProcessBuilder()
+            .command(tccPath, sourceFile.absolutePath, "-o", outputFile.absolutePath)
+            .redirectErrorStream(true)
+            .start()
+
         process.waitFor()
-        return outputBinary
+        return outputFile.absolutePath
     }
 }

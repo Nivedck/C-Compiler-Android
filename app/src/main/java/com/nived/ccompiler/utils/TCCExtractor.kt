@@ -5,31 +5,25 @@ import java.io.File
 import java.io.FileOutputStream
 
 object TCCExtractor {
-    fun extractTCCBinaries(context: Context): Boolean {
-        return try {
-            val tccDir = File(context.filesDir, "tcc/bin")
-            if (!tccDir.exists()) tccDir.mkdirs()
 
-            val assetManager = context.assets
-            val binaries = assetManager.list("tcc/bin") ?: return false
+    fun extractTCC(context: Context): String {
+        val tccDir = File(context.filesDir, "tcc")
+        val tccBinary = File(tccDir, "tcc")
 
-            for (file in binaries) {
-                val outFile = File(tccDir, file)
-                if (!outFile.exists()) {
-                    assetManager.open("tcc/bin/$file").use { input ->
-                        FileOutputStream(outFile).use { output -> input.copyTo(output) }
-                    }
-                    outFile.setExecutable(true)
+        if (!tccBinary.exists()) {
+            tccDir.mkdirs()
+
+            // Copy TCC from assets to internal storage
+            context.assets.open("tcc/tcc").use { input ->
+                FileOutputStream(tccBinary).use { output ->
+                    input.copyTo(output)
                 }
             }
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
 
-    fun getTCCPath(context: Context): String {
-        return File(context.filesDir, "tcc/bin").absolutePath
+            // Make it executable
+            tccBinary.setExecutable(true)
+        }
+
+        return tccBinary.absolutePath
     }
 }

@@ -2,11 +2,14 @@ package com.nived.ccompiler.compiler
 
 import java.io.File
 
-object ExecutionManager {
+class ExecutionManager {
+
     fun runBinary(binaryPath: String): String {
-        val process = Runtime.getRuntime().exec(binaryPath)
-        val output = process.inputStream.bufferedReader().readText()
-        process.waitFor()
-        return output
+        val process = ProcessBuilder()
+            .command(binaryPath)
+            .redirectErrorStream(true)
+            .start()
+
+        return process.inputStream.bufferedReader().readText()
     }
 }
