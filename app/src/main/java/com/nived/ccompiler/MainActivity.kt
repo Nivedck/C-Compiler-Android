@@ -15,6 +15,7 @@ import com.nived.ccompiler.ui.EditorScreen
 import com.nived.ccompiler.ui.OutputScreen
 import com.nived.ccompiler.utils.LLVMExtractor
 import kotlinx.coroutines.launch
+import androidx.compose.material.Text
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,26 +41,30 @@ fun MyCCompilerApp() {
     val context = LocalContext.current
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("C Compiler") }) },
-        content = {
-            Column(Modifier.fillMaxSize().padding(16.dp)) {
-                EditorScreen(codeText) { codeText = it }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            val filePath = CompilerManager.saveCodeToFile(context, codeText)
-                            val binaryPath = CompilerManager.compileCode(context, filePath)
-                            outputText = ExecutionManager.runExecutable(binaryPath)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Run")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                OutputScreen(outputText)
+        topBar = { TopAppBar(title = { Text("C Compiler") }) }
+    ) { paddingValues ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            EditorScreen(codeText) { codeText = it }
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        val filePath = CompilerManager.saveCodeToFile(context, codeText)
+                        val binaryPath = CompilerManager.compileCode(context, filePath)
+                        outputText = ExecutionManager.runExecutable(binaryPath)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Run")
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            OutputScreen(outputText)
         }
-    )
+    }
 }
