@@ -1,6 +1,7 @@
 package com.nived.ccompiler
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -15,7 +16,6 @@ import com.nived.ccompiler.ui.EditorScreen
 import com.nived.ccompiler.ui.OutputScreen
 import com.nived.ccompiler.utils.LLVMExtractor
 import kotlinx.coroutines.launch
-import androidx.compose.material.Text
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +24,9 @@ class MainActivity : ComponentActivity() {
         // Extract LLVM binaries
         val extractionSuccess = LLVMExtractor.extractLLVMBinaries(this)
         if (!extractionSuccess) {
-            // Handle failure
+            // Show error message to user
+            Toast.makeText(this, "Failed to extract LLVM binaries", Toast.LENGTH_LONG).show()
+            return
         }
 
         setContent {
