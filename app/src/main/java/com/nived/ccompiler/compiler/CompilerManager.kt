@@ -2,6 +2,7 @@ package com.nived.ccompiler.compiler
 
 import android.content.Context
 import java.io.File
+import java.io.IOException
 
 class CompilerManager(private val context: Context) {
 
@@ -12,12 +13,22 @@ class CompilerManager(private val context: Context) {
 
         sourceFile.writeText(sourceCode)
 
-        val process = ProcessBuilder()
-            .command(tccPath, sourceFile.absolutePath, "-o", outputFile.absolutePath)
-            .redirectErrorStream(true)
-            .start()
+        return try {
+            val process = ProcessBuilder()
+                .command(tccPath, sourceFile.absolutePath, "-o", outputFile.absolutePath)
+                .redirectErrorStream(true)
+                .start()
 
-        process.waitFor()
-        return outputFile.absolutePath
+            val errorOutput = process.inputStream.bufferedReader().readText()
+            process.waitFor()
+
+            if (outputFile.exists()) {
+                return outputFile.absolutePath
+            } else {
+                return "Compilation failed:\n$errorOutput"
+            }
+        } catch (e: IOException) {
+            return "Error running compiler: ${e.message}"
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.nived.ccompiler
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.nived.ccompiler.utils.TCCExtractor
@@ -13,14 +14,14 @@ class MainActivity : ComponentActivity() {
         // Extract TCC binaries
         val tccPath = TCCExtractor.extractTCC(this)
         if (tccPath.isEmpty()) {
-            println("❌ Failed to extract TCC binaries!")
+            Log.e("MainActivity", "❌ Failed to extract TCC binaries!")
         } else {
-            println("✅ TCC extracted successfully at: $tccPath")
+            Log.d("MainActivity", "✅ TCC extracted successfully at: $tccPath")
         }
 
         // Set UI
         setContent {
-            CodeEditorScreen()
+            CodeEditorScreen(context = this) // Pass context correctly
         }
     }
 }
