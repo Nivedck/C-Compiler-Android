@@ -8,9 +8,14 @@ class ExecutionManager {
     fun runBinary(binaryPath: String): String {
         val binaryFile = File(binaryPath)
 
-        if (!binaryFile.exists()) {
-            return "Error: Binary file does not exist."
-        }
+        val binaryFile = File(binaryPath)
+
+    if (!binaryFile.exists()) {
+        
+        Log.e("ExecutionManager", "Binary file does not exist: $binaryPath")
+        return "Error: Binary file does not exist at $binaryPath"
+    }
+
 
         try {
             // Ensure execution permission
