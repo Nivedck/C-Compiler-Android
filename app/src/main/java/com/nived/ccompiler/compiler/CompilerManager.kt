@@ -1,30 +1,29 @@
 package com.nived.ccompiler.compiler
 
 import android.content.Context
-import com.nived.ccompiler.utils.TCCExtractor
+import android.util.Log
 import java.io.File
 import java.io.IOException
 
 class CompilerManager(private val context: Context) {
 
-    fun saveCodeToFile(code: String): String {
+    fun compileCCode(sourceCode: String): String {
+        val tccPath = com.nived.ccompiler.utils.TCCExtractor.extractTCC(context)
         val sourceFile = File(context.filesDir, "temp.c")
-        sourceFile.writeText(code)
-        return sourceFile.absolutePath
-    }
-
-    fun compileCCode(sourcePath: String): String {
-        val tccPath = TCCExtractor.extractTCC(context)
-        
-        if (tccPath.isEmpty()) {
-            return "Error: TCC binary extraction failed!"
-        }
-
         val outputFile = File(context.filesDir, "output")
+
+        sourceFile.writeText(sourceCode)
+
+        // ✅ Check if TCC exists and is executable
+        val tccBinary = File(tccPath)
+        if (!tccBinary.exists() || !tccBinary.canExecute()) {
+            Log.e("CompilerManager", "TCC binary is missing or not executable: $tccPath")
+            return "Error: TCC compiler is not executable!"
+        }
 
         return try {
             val process = ProcessBuilder()
-                .command(tccPath, sourcePath, "-o", outputFile.absolutePath)
+                .command(tccPath, sourceFile.absolutePath, "-o", outputFile.absolutePath)
                 .redirectErrorStream(true)
                 .start()
 
@@ -32,7 +31,6 @@ class CompilerManager(private val context: Context) {
             process.waitFor()
 
             if (outputFile.exists()) {
-                outputFile.setExecutable(true) // Ensure binary is executable
                 return outputFile.absolutePath
             } else {
                 return "Compilation failed:\n$errorOutput"
