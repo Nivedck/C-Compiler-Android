@@ -11,6 +11,7 @@ import com.nived.ccompiler.compiler.ExecutionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @Composable
@@ -32,10 +33,13 @@ fun CodeEditorScreen(context: Context) {
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
                     val sourcePath = saveCodeToFile(context, code)
-                    val binaryPath = compilerManager.compileCCode(sourcePath)
+                    val binaryPath = compilerManager.compileCCode(code) // ✅ Pass raw C code
                     val result = executionManager.runBinary(binaryPath)
-                    
-                    output = result // Update UI with output
+
+                    // ✅ Switch to Main thread to update UI
+                    withContext(Dispatchers.Main) {
+                        output = result
+                    }
                 }
             },
             modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
